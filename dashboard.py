@@ -31,7 +31,7 @@ if benchmark_selection == "Overview":
     
     with col2:
         st.metric("Total Test Cases", "2000+")
-        st.metric("Languages Tested", "7")
+        st.metric("Languages Tested", "6")
     
     with col3:
         st.metric("Datasets", "5")
