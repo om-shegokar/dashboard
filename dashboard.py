@@ -16,7 +16,7 @@ st.sidebar.title("Navigation")
 benchmark_selection = st.sidebar.radio(
     "Select Benchmark:",
     ["Overview", "Model Comparison Graphs", "ARCHIT EVAL SCRIPT", "HumanEval (Rust)", "SWE Benchmark", 
-     "RustEvo Benchmark", "Aider-Polyglot", "Haskell LLM"]
+     "RustEvo Benchmark", "Aider-Polyglot", "Haskell LLM", "HS EVALS"]
 )
 
 # Overview Section
@@ -26,7 +26,7 @@ if benchmark_selection == "Overview":
     col1, col2, col3 = st.columns(3)
     
     with col1:
-        st.metric("Total Benchmarks", "6")
+        st.metric("Total Benchmarks", "7")
         st.metric("Models Evaluated", "10+")
     
     with col2:
@@ -47,7 +47,8 @@ if benchmark_selection == "Overview":
             'SWE Benchmark',
             'RustEvo Benchmark',
             'Aider-Polyglot',
-            'Haskell LLM'
+            'Haskell LLM',
+            'HS EVALS'
         ],
         'Focus': [
             'General code generation',
@@ -55,15 +56,17 @@ if benchmark_selection == "Overview":
             'Real-world bug fixing',
             'API evolution adaptation',
             'Multi-language code editing',
-            'Functional programming (Haskell)'
+            'Functional programming (Haskell)',
+            'Hyperswitch-specific evaluation'
         ],
         'Models Tested': [
             '5',
-            '3',
+            '4',
             '2',
             '4',
             '4',
-            '1'
+            '1',
+            '4'
         ]
     })
     st.dataframe(benchmarks_info, use_container_width=True)
@@ -520,13 +523,22 @@ elif benchmark_selection == "HumanEval (Rust)":
     """)
     
     st.subheader("Kawai-pilot 32B")
-    data_kawai = {
+    data_kawai_32b = {
         'Model Type': ['Fine-tuned Model', 'Base Model'],
         'Pass@1': ['30.90%', '40.45%'],
         'Pass@10': ['57.69%', '66.03%']
     }
-    df_kawai = pd.DataFrame(data_kawai)
-    st.dataframe(df_kawai, use_container_width=True)
+    df_kawai_32b = pd.DataFrame(data_kawai_32b)
+    st.dataframe(df_kawai_32b, use_container_width=True)
+    
+    st.subheader("Kawai-pilot 72B")
+    data_kawai_72b = {
+        'Model Type': ['Fine-tuned Model', 'Base Model'],
+        'Pass@1': ['46.28%', '26.99%'],
+        'Pass@10': ['61.03%', '41.51%']
+    }
+    df_kawai_72b = pd.DataFrame(data_kawai_72b)
+    st.dataframe(df_kawai_72b, use_container_width=True)
     
     st.subheader("Qwen")
     data_qwen = {
@@ -537,7 +549,8 @@ elif benchmark_selection == "HumanEval (Rust)":
     df_qwen = pd.DataFrame(data_qwen)
     st.dataframe(df_qwen, use_container_width=True)
     
-    st.warning("⚠️ **Note**: Kawai-pilot fine-tuned model performed lower than base. Most failures were due to syntax, formatting/structure, or logic errors.")
+    st.warning("⚠️ **Note**: Kawai-pilot 32B fine-tuned model performed lower than base. Most failures were due to syntax, formatting/structure, or logic errors.")
+    st.success("✅ **Kawai-pilot 72B**: Fine-tuned model shows significant improvement over base model with 46.28% Pass@1.")
     st.success("✅ **Qwen Improvement**: Fine-tuned Qwen showed significant improvement over base model.")
 
 # SWE Benchmark
@@ -843,6 +856,260 @@ elif benchmark_selection == "Haskell LLM":
     - ✅ 100% zero syntax and indentation errors
     - ✅ Exceptional stability, speed, and cost-effectiveness
     - ✅ Demonstrates deep understanding of Haskell paradigms
+    """)
+
+# HS EVALS
+elif benchmark_selection == "HS EVALS":
+    st.header("🔍 HS EVALS - Hyperswitch-Specific Evaluation")
+    
+    st.markdown("""
+    **HS EVALS** is a specialized benchmark designed to evaluate models on Hyperswitch-specific tasks.
+    It measures performance across three key areas: code understanding, code generation, and code debugging.
+    """)
+    
+    # Model selection tabs
+    model_tab1, model_tab2 = st.tabs(["32B Models", "72B Models"])
+    
+    with model_tab1:
+        st.subheader("kat-dev 32B Models Performance")
+        
+        # Task-specific tabs for 32B
+        task_tab1, task_tab2, task_tab3 = st.tabs(["Code Understanding", "Code Generation", "Code Debugging"])
+        
+        with task_tab1:
+            st.subheader("Code Understanding Task")
+            st.markdown("**Evaluation Metrics**: Semantic wellness, Technical accuracy, Conceptual understanding")
+            
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.markdown("#### kat-dev-base-32b")
+                base_understanding = {
+                    'Metric': ['Total Items Evaluated', 'Semantic Wellness', 'Technical Accuracy', 'Conceptual Understanding', 'Overall Average'],
+                    'Score': [40, 0.8045, 0.8130, 0.8143, 0.8106]
+                }
+                df_base_understanding = pd.DataFrame(base_understanding)
+                st.dataframe(df_base_understanding, use_container_width=True)
+            
+            with col2:
+                st.markdown("#### kat-dev-hs-32b")
+                ft_understanding = {
+                    'Metric': ['Total Items Evaluated', 'Semantic Wellness', 'Technical Accuracy', 'Conceptual Understanding', 'Overall Average'],
+                    'Score': [40, 0.8170, 0.8152, 0.8065, 0.8129]
+                }
+                df_ft_understanding = pd.DataFrame(ft_understanding)
+                st.dataframe(df_ft_understanding, use_container_width=True)
+            
+            st.info("""
+            **Key Insights**:
+            - ✅ Fine-tuned model learned specific Hyperswitch concepts (e.g., Revenue Recovery)
+            - ⚠️ Training was incomplete - still fails at some key concepts like External Providers
+            - 📊 Base model excels at general programming concepts but lacks Hyperswitch-specific knowledge
+            """)
+        
+        with task_tab2:
+            st.subheader("Code Generation Task")
+            st.markdown("**Evaluation Metrics**: Semantic wellness, Contextual relevance, Implementation efficiency, CodeBLEU score")
+            
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.markdown("#### kat-dev-base-32b")
+                base_generation = {
+                    'Metric': ['Total Items Evaluated', 'Semantic Wellness', 'Contextual Relevance', 'Implementation Efficiency', 'CodeBLEU Score'],
+                    'Score': [42, 0.9268, 0.7129, 0.5548, 0.0015]
+                }
+                df_base_generation = pd.DataFrame(base_generation)
+                st.dataframe(df_base_generation, use_container_width=True)
+            
+            with col2:
+                st.markdown("#### kat-dev-hs-32b")
+                ft_generation = {
+                    'Metric': ['Total Items Evaluated', 'Semantic Wellness', 'Contextual Relevance', 'Implementation Efficiency', 'CodeBLEU Score'],
+                    'Score': [42, 0.9289, 0.6900, 0.5667, 0.0024]
+                }
+                df_ft_generation = pd.DataFrame(ft_generation)
+                st.dataframe(df_ft_generation, use_container_width=True)
+            
+            st.success("""
+            **Fine-Tuned Model Strengths**:
+            - ✅ Correctly writes code for complex Hyperswitch-specific tasks
+            - ✅ Successfully uses special build tools (tonic_build, openapi-generator)
+            - ✅ Good at pattern recognition and application
+            """)
+            
+            st.warning("""
+            **Note on Contextual Relevance**:
+            - Base model scored higher (0.7129) because it stuck to simple prompts
+            - Fine-tuned model scored lower (0.6900) due to being "overly enthusiastic" - providing complete solutions instead of just completing single lines
+            - This is actually a strength in real-world scenarios, providing more complete and useful code
+            """)
+        
+        with task_tab3:
+            st.subheader("Code Debugging Task")
+            st.markdown("**Evaluation Metrics**: Fix relevance, Functional correctness")
+            
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.markdown("#### kat-dev-base-32b")
+                base_debugging = {
+                    'Metric': ['Total Items', 'Fix Relevance', 'Functional Correctness'],
+                    'Score': [40, 0.7170, 0.6210]
+                }
+                df_base_debugging = pd.DataFrame(base_debugging)
+                st.dataframe(df_base_debugging, use_container_width=True)
+            
+            with col2:
+                st.markdown("#### kat-dev-hs-32b")
+                ft_debugging = {
+                    'Metric': ['Total Items', 'Fix Relevance', 'Functional Correctness'],
+                    'Score': [40, 0.6990, 0.5490]
+                }
+                df_ft_debugging = pd.DataFrame(ft_debugging)
+                st.dataframe(df_ft_debugging, use_container_width=True)
+            
+            st.error("""
+            **Fine-Tuned Model Issues**:
+            - ❌ Hallucination: Invented code that wasn't there (e.g., 6 fictional error types)
+            - ❌ Wrong bug identification: Did opposite of what was needed
+            - ❌ Over-complexity: Made simple problems harder than necessary
+            """)
+            
+            st.success("""
+            **Base Model Strengths**:
+            - ✅ 50% functional correctness success rate
+            - ✅ Better at understanding tricky bugs
+            - ✅ Stuck to the script without inventing new code
+            """)
+    
+    with model_tab2:
+        st.subheader("kat-dev 72B Models Performance")
+        
+        # Task-specific tabs for 72B
+        task_tab1, task_tab2, task_tab3 = st.tabs(["Code Understanding", "Code Generation", "Code Debugging"])
+        
+        with task_tab1:
+            st.subheader("Code Understanding Task")
+            st.markdown("**Evaluation Metrics**: Semantic wellness, Technical accuracy, Conceptual understanding")
+            
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.markdown("#### kat-dev-base-72b")
+                base_understanding_72 = {
+                    'Metric': ['Total Items Evaluated', 'Semantic Wellness', 'Technical Accuracy', 'Conceptual Understanding', 'Overall Average'],
+                    'Score': [40, 0.7693, 0.7500, 0.7348, 0.7513]
+                }
+                df_base_understanding_72 = pd.DataFrame(base_understanding_72)
+                st.dataframe(df_base_understanding_72, use_container_width=True)
+            
+            with col2:
+                st.markdown("#### kat-dev-hs-72b")
+                ft_understanding_72 = {
+                    'Metric': ['Total Items Evaluated', 'Semantic Wellness', 'Technical Accuracy', 'Conceptual Understanding', 'Overall Average'],
+                    'Score': [40, 0.8057, 0.7883, 0.7630, 0.7856]
+                }
+                df_ft_understanding_72 = pd.DataFrame(ft_understanding_72)
+                st.dataframe(df_ft_understanding_72, use_container_width=True)
+            
+            st.success("**Improvement**: Fine-tuned model shows stronger comprehension and accuracy (0.75 → 0.79), better grasping the meaning and logic of code.")
+        
+        with task_tab2:
+            st.subheader("Code Generation Task")
+            st.markdown("**Evaluation Metrics**: Semantic wellness, Contextual relevance, Implementation efficiency, CodeBLEU score")
+            
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.markdown("#### kat-dev-base-72b")
+                base_generation_72 = {
+                    'Metric': ['Total Items Evaluated', 'Semantic Wellness', 'Contextual Relevance', 'Implementation Efficiency', 'CodeBLEU Score'],
+                    'Score': [42, 0.9288, 0.6760, 0.4595, 0.0016]
+                }
+                df_base_generation_72 = pd.DataFrame(base_generation_72)
+                st.dataframe(df_base_generation_72, use_container_width=True)
+            
+            with col2:
+                st.markdown("#### kat-dev-hs-72b")
+                ft_generation_72 = {
+                    'Metric': ['Total Items Evaluated', 'Semantic Wellness', 'Contextual Relevance', 'Implementation Efficiency', 'CodeBLEU Score'],
+                    'Score': [42, 0.9282, 0.6964, 0.4976, 0.0017]
+                }
+                df_ft_generation_72 = pd.DataFrame(ft_generation_72)
+                st.dataframe(df_ft_generation_72, use_container_width=True)
+            
+            st.success("**Improvements**: Better relevance and efficiency indicate more context-aware and cleaner code generation.")
+        
+        with task_tab3:
+            st.subheader("Code Debugging Task")
+            st.markdown("**Evaluation Metrics**: Fix relevance, Functional correctness")
+            
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.markdown("#### kat-dev-base-72b")
+                base_debugging_72 = {
+                    'Metric': ['Total Items', 'Fix Relevance', 'Functional Correctness'],
+                    'Score': [40, 0.6220, 0.4920]
+                }
+                df_base_debugging_72 = pd.DataFrame(base_debugging_72)
+                st.dataframe(df_base_debugging_72, use_container_width=True)
+            
+            with col2:
+                st.markdown("#### kat-dev-hs-72b")
+                ft_debugging_72 = {
+                    'Metric': ['Total Items', 'Fix Relevance', 'Functional Correctness'],
+                    'Score': [40, 0.6410, 0.5380]
+                }
+                df_ft_debugging_72 = pd.DataFrame(ft_debugging_72)
+                st.dataframe(df_ft_debugging_72, use_container_width=True)
+            
+            st.success("**Improvements**: Both fix relevance and correctness improved, showing better capability at identifying and fixing real bugs.")
+    
+    # Overall comparison visualization
+    st.markdown("---")
+    st.subheader("📊 Overall Performance Comparison")
+    
+    # Comparison chart for all models
+    comparison_data = pd.DataFrame({
+        'Model': ['kat-dev-base-32b', 'kat-dev-hs-32b', 'kat-dev-base-72b', 'kat-dev-hs-72b'],
+        'Code Understanding': [0.8106, 0.8129, 0.7513, 0.7856],
+        'Code Generation (Efficiency)': [0.5548, 0.5667, 0.4595, 0.4976],
+        'Code Debugging (Correctness)': [0.6210, 0.5490, 0.4920, 0.5380]
+    })
+    
+    fig_comparison = go.Figure()
+    
+    metrics = ['Code Understanding', 'Code Generation (Efficiency)', 'Code Debugging (Correctness)']
+    colors = ['#1f77b4', '#ff7f0e', '#2ca02c']
+    
+    for i, metric in enumerate(metrics):
+        fig_comparison.add_trace(go.Bar(
+            name=metric,
+            x=comparison_data['Model'],
+            y=comparison_data[metric],
+            text=comparison_data[metric].round(4),
+            textposition='auto',
+            marker_color=colors[i]
+        ))
+    
+    fig_comparison.update_layout(
+        title='HS EVALS - Overall Performance Across Tasks',
+        xaxis_title='Model',
+        yaxis_title='Score',
+        barmode='group',
+        height=500,
+        hovermode='x unified'
+    )
+    st.plotly_chart(fig_comparison, use_container_width=True)
+    
+    st.info("""
+    **Summary**:
+    - 32B models generally outperform 72B models on Hyperswitch-specific tasks
+    - Fine-tuned models show improvements in code understanding and generation
+    - Base models perform better on debugging tasks, likely due to better generalization
+    - Trade-off between specialized knowledge (fine-tuned) vs. general reasoning (base)
     """)
 
 # Footer
